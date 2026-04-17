@@ -3,8 +3,7 @@ import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from collections import defaultdict\
-import os
-from flask_sqlalchemy import SQLAlchemy
+import os from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.secret_key = 'super_secret_hackathon_key'
