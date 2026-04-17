@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-from collections import defaultdict
+from collections import defaultdict\
+import os
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.secret_key = 'super_secret_hackathon_key'
@@ -10,34 +12,35 @@ app.secret_key = 'super_secret_hackathon_key'
 
 # ================= DATABASE =================
 
-def init_db():
-    with sqlite3.connect('tracker.db') as conn:
-        cursor = conn.cursor()
+# 1. Setup the Database URI
+uri = os.getenv("DATABASE_URL")
+if uri and uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
 
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT UNIQUE NOT NULL,
-                password TEXT NOT NULL,
-                budget REAL DEFAULT 0
-            )
-        ''')
+app.config['SQLALCHEMY_DATABASE_URI'] = uri or 'sqlite:///tracker.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS expenses (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER,
-                item_name TEXT NOT NULL,
-                cost REAL NOT NULL,
-                created_at DATE DEFAULT CURRENT_DATE,
-                FOREIGN KEY(user_id) REFERENCES users(id)
-            )
-        ''')
+db = SQLAlchemy(app)
 
-        conn.commit()
+# 2. Define your tables as Classes (Models)
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+    budget = db.Column(db.Float, default=0.0)
 
+class Expense(db.Model):
+    __tablename__ = 'expenses'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    item_name = db.Column(db.String(100), nullable=False)
+    cost = db.Column(db.Float, nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
 
-init_db()
+# 3. The replacement for your init_db()
+with app.app_context():
+    db.create_all()
 
 
 # ================= HOME =================
