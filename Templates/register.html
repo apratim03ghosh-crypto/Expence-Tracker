@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - Budget Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Create Account</h1>
+        <p style="color: #a0a0b8; margin-bottom: 20px;">Join to start tracking your Budget.</p>
+        
+        {% if error %}
+            <p style="color: #ff007f; margin-bottom: 15px;">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('register') }}">
+            <input type="text" name="username" placeholder="Choose a Username" required>
+            <div class="password-wrapper">
+                <input type="password" name="password" id="passwordInput" placeholder="Create a Password" required>
+                <i class="fa-solid fa-eye" id="togglePassword" onclick="togglePasswordVisibility()"></i>
+            </div>
+            <button type="submit">Sign Up</button>
+        </form>
+        
+        <div style="margin-top: 20px;">
+            <a href="{{ url_for('login') }}" style="color: #00d2ff; text-decoration: none;">Already have an account? Log in here.</a>
+        </div>
+    </div>
+
+    <script>
+        function togglePasswordVisibility() {
+            const passwordField = document.getElementById("passwordInput");
+            const toggleIcon = document.getElementById("togglePassword");
+            
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleIcon.classList.remove("fa-eye");
+                toggleIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password"; 
+                toggleIcon.classList.remove("fa-eye-slash");
+                toggleIcon.classList.add("fa-eye");
+            }
+        }
+    </script>
+</body>
+</html>

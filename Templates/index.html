@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Budget Tracker Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- LEFT SIDE -->
+    <div class="left-panel">
+
+        <h2>Welcome, {{ username }}</h2>
+
+        <!-- BUDGET SECTION -->
+        <div class="card">
+            <h3>Set Budget</h3>
+            <input type="number" id="budgetInput" placeholder="Enter budget amount">
+            <button onclick="setBudget()">Set Budget</button>
+        </div>
+
+        <!-- STATS -->
+        <div class="card">
+            <p><strong>Budget:</strong> ₹{{ budget }}</p>
+            <p><strong>Total Spent:</strong> ₹{{ total }}</p>
+            <p><strong>Remaining:</strong> ₹{{ remaining }}</p>
+
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+        </div>
+
+        <!-- ADD EXPENSE -->
+        <div class="card">
+            <h3>Add Expense</h3>
+            <input type="text" id="itemInput" placeholder="Item name">
+            <input type="number" id="costInput" placeholder="Cost">
+            <button onclick="addExpense()">Add Expense</button>
+        </div>
+
+        <!-- RESET -->
+        <div class="card">
+            <button class="reset-btn" onclick="resetAll()">Reset All Data</button>
+        </div>
+
+        <!-- EXPENSE LIST -->
+        <div class="card">
+            <h3>Expense History</h3>
+            <ul class="expense-list">
+                {% for item, cost in expenses %}
+                    <li>{{ item }} - ₹{{ cost }}</li>
+                {% else %}
+                    <li>No expenses yet</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+
+    </div>
+
+
+    <!-- RIGHT SIDE -->
+    <div class="right-panel">
+        <h2>Monthly Daily Expense Graph</h2>
+        <canvas id="expenseChart"></canvas>
+    </div>
+
+</div>
+
+
+<script>
+
+function addExpense() {
+    const item = document.getElementById("itemInput").value;
+    const cost = document.getElementById("costInput").value;
+
+    if (!item || !cost) {
+        alert("Please fill both fields");
+        return;
+    }
+
+    fetch('/add_expense', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ item_name: item, cost: cost })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            location.reload();
+        }
+    });
+}
+
+
+function setBudget() {
+    const budget = document.getElementById("budgetInput").value;
+
+    if (!budget) {
+        alert("Enter budget amount");
+        return;
+    }
+
+    fetch('/set_budget', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ budget: budget })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            location.reload();
+        }
+    });
+}
+
+
+function resetAll() {
+    if (!confirm("Are you sure you want to reset everything?")) {
+        return;
+    }
+
+    fetch('/reset', {
+        method: 'POST'
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            location.reload();
+        }
+    });
+}
+
+
+// LOAD CHART
+fetch('/daily_expenses')
+.then(res => res.json())
+.then(data => {
+
+    const ctx = document.getElementById('expenseChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.days,
+            datasets: [{
+                label: 'Daily Expenses',
+                data: data.amounts,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+});
+
+</script>
+
+</body>
+</html>

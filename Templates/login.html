@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - WalletWatch</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 10px;
+        }
+
+        .password-wrapper i {
+            position: absolute;
+            right: 12px;
+            top: 40%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #a0a0b8;
+        }
+
+        .error-message {
+            color: #ff007f;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        input {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+
+        a {
+            color: #00d2ff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Welcome Back</h1>
+    <p style="color:#a0a0b8; margin-bottom:20px;">
+        Please log in to manage your wallet.
+    </p>
+
+    {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('login') }}">
+
+        <input type="text"
+               name="username"
+               placeholder="Username"
+               autocomplete="username"
+               required>
+
+        <div class="password-wrapper">
+            <input type="password"
+                   name="password"
+                   id="passwordInput"
+                   placeholder="Password"
+                   autocomplete="current-password"
+                   required>
+
+            <i class="fa-solid fa-eye"
+               id="togglePassword"
+               onclick="togglePasswordVisibility()"></i>
+        </div>
+
+        <button type="submit">Log In</button>
+    </form>
+
+    <div style="margin-top:20px; text-align:center;">
+        <a href="{{ url_for('register') }}">
+            Don't have an account? Create one here.
+        </a>
+    </div>
+
+</div>
+
+<script>
+    function togglePasswordVisibility() {
+        const passwordField = document.getElementById("passwordInput");
+        const toggleIcon = document.getElementById("togglePassword");
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleIcon.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+            passwordField.type = "password";
+            toggleIcon.classList.replace("fa-eye-slash", "fa-eye");
+        }
+    }
+</script>
+
+</body>
+</html>

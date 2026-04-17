@@ -1,0 +1,149 @@
+/* ===== GLOBAL ===== */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0f1a, #1c1c2e);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: white;
+}
+
+/* ===== MAIN CARD ===== */
+.container {
+    width: 420px;
+    padding: 30px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: 0.3s ease;
+}
+
+.container:hover {
+    transform: translateY(-4px);
+}
+
+/* ===== HEADER ===== */
+h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* ===== BUDGET BOX ===== */
+.budget-container {
+    background: linear-gradient(135deg, #1f1fff, #00c6ff);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 255, 0.4);
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar-bg {
+    background-color: rgba(0,0,0,0.3);
+    height: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.progress-bar-fill {
+    background: linear-gradient(90deg, #00ffcc, #00d2ff);
+    height: 100%;
+    width: 0%;
+    transition: width 0.6s ease;
+    border-radius: 10px;
+}
+
+.over-budget {
+    background: linear-gradient(90deg, #ff007f, #ff4d4d);
+}
+
+/* ===== INPUTS ===== */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: white;
+    outline: none;
+    transition: 0.3s;
+}
+
+input:focus {
+    border: 1px solid #00d2ff;
+    box-shadow: 0 0 8px #00d2ff;
+}
+
+/* ===== BUTTONS ===== */
+button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+/* Add Expense Button */
+button[onclick="addExpense()"] {
+    background: linear-gradient(135deg, #00d2ff, #00ffcc);
+    color: black;
+}
+
+button[onclick="addExpense()"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0,255,255,0.4);
+}
+
+/* Edit Button */
+button[onclick="updateBudget()"] {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    margin-right: 5px;
+}
+
+/* Reset Button */
+button[onclick="resetAll()"] {
+    background: linear-gradient(135deg, #ff007f, #ff4d4d);
+    color: white;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+/* ===== EXPENSE LIST ===== */
+.history h3 {
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.session-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+    margin-bottom: 8px;
+    transition: 0.3s;
+}
+
+.history-item:hover {
+    background: rgba(255,255,255,0.1);
+}
